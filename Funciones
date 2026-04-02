@@ -1,0 +1,88 @@
+import 'dart:convert';
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'lat_lng.dart';
+import 'place.dart';
+import 'uploaded_file.dart';
+import '/backend/supabase/supabase.dart';
+
+double resta(
+  double? valor1,
+  double? valor2,
+) {
+  // Si alguno es null, se toma como 0 para evitar errores de null safety
+  final double v1 = (valor1 ?? 0).toDouble();
+  final double v2 = (valor2 ?? 0).toDouble();
+
+  return v1 - v2;
+}
+
+bool noEsNegativo(int valor) {
+  if (valor < 1) return false;
+  return true;
+}
+
+int buenEstado(List<DateTime> fechas) {
+  final DateTime hoy = DateTime.now();
+  final DateTime limite = hoy.add(const Duration(days: 30));
+
+  int contador = 0;
+
+  for (final fecha in fechas) {
+    if (fecha.isAfter(limite)) {
+      contador++;
+    }
+  }
+
+  return contador;
+}
+
+int? vencidos(List<DateTime> fechas) {
+  int contador = 0;
+
+  final DateTime hoy = DateTime.now();
+
+  for (var fecha in fechas) {
+    if (fecha.isBefore(hoy)) {
+      contador++;
+    }
+  }
+
+  return contador;
+}
+
+int? porVencer(List<DateTime> fechas) {
+  int contador = 0;
+
+  final DateTime hoy = DateTime.now();
+  final DateTime limite = hoy.add(const Duration(days: 30));
+
+  for (var fecha in fechas) {
+    if (!fecha.isBefore(hoy) && !fecha.isAfter(limite)) {
+      contador++;
+    }
+  }
+
+  return contador;
+}
+
+int stringToInt(String text) {
+  if (text.isEmpty) {
+    return 0;
+  }
+
+  return int.tryParse(text) ?? 0;
+}
+
+double sumaDeKilos(List<double>? listaInsumos) {
+  final numero = listaInsumos?.reduce((value, element) => value + element);
+  return numero ?? 1;
+}
+
+DateTime convertirAFecha(String fecha) {
+  return DateTime.parse(fecha);
+}
